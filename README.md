@@ -1,10 +1,10 @@
 # Fashion MNIST Multiclass Classification with Keras
 
 ## Objective
-This project aims to build a multiclass classification model using Keras with a TensorFlow backend to classify fashion items from the Fashion MNIST dataset. The goal is to achieve a minimum accuracy of 90% on the test set by implementing a well-regularized Artificial Neural Network (ANN) and visualizing the model's performance.
+This project builds a multiclass classification model using Keras with a TensorFlow backend to classify fashion items from the Fashion MNIST dataset. The model's goal is to achieve high accuracy, targeting a minimum of 90% on the test set.
 
 ## Dataset
-The [Fashion MNIST](https://github.com/zalandoresearch/fashion-mnist) dataset contains 28x28 grayscale images of fashion items, organized into 10 categories. Each image is labeled with one of the following classes:
+The [Fashion MNIST](https://github.com/zalandoresearch/fashion-mnist) dataset consists of 28x28 grayscale images of various clothing items, categorized into 10 classes:
 - T-shirt/top
 - Trouser
 - Pullover
@@ -16,40 +16,35 @@ The [Fashion MNIST](https://github.com/zalandoresearch/fashion-mnist) dataset co
 - Bag
 - Ankle boot
 
-The dataset consists of:
+The dataset includes:
 - **Training Set**: 60,000 images
 - **Test Set**: 10,000 images
 
-## Steps
-1. **Data Loading and Preprocessing**:
-   - Load the Fashion MNIST dataset from `keras.datasets`.
-   - Split the dataset into training and testing sets.
-   - Normalize images to scale pixel values between 0 and 1.
-   - Flatten each 28x28 image into a 1D vector of 784 features for input to the ANN.
+## Model Architecture
+The model is a deep Artificial Neural Network (ANN) created with the Keras Sequential API. The architecture includes:
 
-2. **Data Visualization**:
-   - Visualize sample images along with their labels to understand the dataset.
+- **Input Layer**: Accepts a 784-dimensional flattened vector (28x28 pixels).
+- **Hidden Layers**: Five fully connected layers with ReLU activation, batch normalization, and dropout for regularization:
+  - 1024 neurons with 20% dropout
+  - 512 neurons with 20% dropout
+  - 264 neurons with 20% dropout
+  - 128 neurons with 20% dropout
+  - 64 neurons with 20% dropout
+  - 32 neurons with 20% dropout
+- **Output Layer**: 10 neurons with softmax activation to output probabilities for each class.
 
-3. **Model Architecture**:
-   - Used the Keras Sequential API to build the model with the following layers:
-      - An **input layer** to accept the 784-dimensional flattened image vector.
-      - **3 hidden layers** with a reasonable number of neurons and ReLU activation.
-      - An **output layer** with 10 neurons (one per class) and softmax activation for probability output.
-   - Added regularization (e.g., Dropout, Batch Normalization) to prevent overfitting.
-   - Used a learning rate scheduler.
+### Model Compilation
+The model is compiled with:
+- **Optimizer**: Adam
+- **Loss Function**: `sparse_categorical_crossentropy` (for multiclass classification)
+- **Metric**: Accuracy
 
-4. **Compilation**:
-   - Defined the loss function as `sparse_categorical_crossentropy` for multiclass classification.
-   - Used the Adam optimizer.
-   - Tracked accuracy as the evaluation metric during training.
+### Learning Rate Scheduler
+A learning rate scheduler gradually reduces the learning rate:
+```python
+def scheduler(epoch, lr):
+    if epoch > 50:
+        return lr * 0.8
+    return lr
 
-5. **Model Training**:
-   - Train the model on the training data, using an 80-20 split for training and validation.
-   - Monitor validation metrics to detect overfitting.
-
-6. **Evaluation**:
-   - Evaluate the model on the test set to report the test accuracy.
-   - Generate a classification report (precision, recall, F1-score).
-   - Plot the confusion matrix and a bar graph of the classification report metrics.
-   - Visualize the training and validation accuracy and loss curves.
-
+lr_scheduler = LearningRateScheduler(scheduler)
